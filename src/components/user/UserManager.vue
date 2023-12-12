@@ -1,6 +1,7 @@
+
+<!-- 用户管理的主页面 --> 
 <template>
-    <div>
-      
+    <div>    
       <el-row :gutter="20">
           <el-col :span="2">
               <div style="font-weight: bold;">用户管理</div>
@@ -46,7 +47,7 @@
                     disable-transitions>{{scope.row.roleId === 1 ? '管理员' : (scope.row.roleId === 0 ? '超级管理员' : '普通用户')}}</el-tag>
               </template>
           </el-table-column>
-          <el-table-column prop="createTime" label="创建时间" width="180"></el-table-column>
+          <el-table-column prop="createTime" :formatter="formatDate" label="创建时间" width="200"></el-table-column>
           <el-table-column label="操作" width="auto">
               <template slot-scope="scope">
                   <el-button size="mini" @click="modifyUser(scope.row)"><i class="el-icon-edit-outline"></i> 编辑</el-button>
@@ -250,6 +251,13 @@ export default {
     },
 
     methods :{
+
+        formatDate(row) {
+            let formatTime = row.createTime
+            formatTime = formatTime.replace("T", " ")
+            return formatTime
+        },
+
         loadUser () {
             this.$axios.get(this.$httpUrl + '/user/listAll').then(res => {
                 if (res.data.code === 0) { // 请求成功

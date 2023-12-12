@@ -5,18 +5,23 @@
       active-text-color="#ffd04b"
       style="height: 100vh;"
       :collapse="isCollapse"
-      :collapse-transition="false"> 
+      :collapse-transition="false"
+      router> 
       <el-menu-item index="home">
         <i class="el-icon-menu"></i>
         <span slot="title">首页</span>
       </el-menu-item>
-      <el-menu-item index="1">
+      <el-menu-item index="japan">
         <i class="el-icon-document"></i>
-        <span slot="title">日语单词</span>
+        <span slot="title">日语单词管理</span>
       </el-menu-item>
-      <el-menu-item index="2">
+      <el-menu-item index="english">
         <i class="el-icon-setting"></i>
-        <span slot="title">英语单词</span>
+        <span slot="title">英语单词管理</span>
+      </el-menu-item>
+      <el-menu-item index="user">
+        <i class="el-icon-user"></i>
+        <span slot="title">用户管理</span>
       </el-menu-item>
     </el-menu>
 </template>

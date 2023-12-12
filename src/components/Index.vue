@@ -10,7 +10,8 @@
                 <Header @doCollapse="doCollapse" :icon="icon"></Header>
             </el-header>
             <el-main>
-                <Main></Main>
+                <!-- <User></User> -->
+                <router-view/>
             </el-main>
         </el-container>
     </el-container>
@@ -28,16 +29,14 @@
 </style>
 
 <script>
-import AsideI from './user/AsideI.vue'
-import Header from './user/Header.vue'
-import Main from './user/Main.vue'
+import AsideI from './index/AsideI.vue'
+import Header from './index/Header.vue'
 
 export default {
 
     components : {
         AsideI,
-        Header,
-        Main
+        Header
     },
 
     data () {

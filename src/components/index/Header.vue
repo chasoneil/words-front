@@ -29,17 +29,31 @@ export default {
     name : "Header",
     data () {
         return {
-            user : JSON.parse(sessionStorage.getItem('curUser'))
+            user : JSON.parse(sessionStorage.getItem('curUser'))        // 将缓存的用户信息保存
         }
     },
     methods : {
         toUser () {
-            console.log("to User");
+            this.$router.push('/')                  // 跳转到个人中心
         },
         logout () {
-            // 退出跳转  执行清理缓存数据
-            this.$router.push('/')
-            sessionStorage.clear()
+            this.$confirm ('确定要退出登录?', '提示', {
+                confirmButtonText : '确认',
+                type : 'warning',
+                center : true
+            }).then(() => {
+                this.$message({
+                    type : 'success',
+                    message : '退出登录成功'
+                })
+                this.$router.push('/') // 退出跳转  执行清理缓存数据
+                sessionStorage.clear()
+            }).catch(() => {
+                this.$message({
+                    type : 'info',
+                    message : '取消退出'
+                })
+            })          
         },
         collapse () {
             // 自定义了一个事件 传递给父组件 index
