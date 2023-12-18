@@ -9,11 +9,11 @@
           
           <el-col :span="12">
               <div>
-                    <el-input placeholder="请输入中文含义" v-model="word.wmean" clearable style="width: 200px;"></el-input>
-                    <el-select v-model="word.classId" clearable placeholder="请选择课程" style="margin-left: 10px;">
+                    <el-input placeholder="请输入中文含义" v-model="pageVO.wmean" clearable style="width: 200px;"></el-input>
+                    <el-select v-model="pageVO.classId" clearable placeholder="请选择课程" style="margin-left: 10px;">
                         <el-option v-for="item in classObjs" :key="item.classId" :label="item.name" :value="item.classId"></el-option>
                     </el-select>
-                    <el-select v-model="word.groupId" clearable placeholder="请选择分组" style="margin-left: 10px;">
+                    <el-select v-model="pageVO.groupId" clearable placeholder="请选择分组" style="margin-left: 10px;">
                         <el-option v-for="item in groupObjs" :key="item.groupId" :label="item.name" :value="item.groupId"></el-option>
                     </el-select>
                     <el-button size="small" type="success" style="margin-left: 15px;" @click="search">
@@ -28,28 +28,42 @@
           <el-col :span="6"><div class="grid-content bg-white"></div></el-col>
           <el-col :span="4" style="text-align: right;">
               <el-button size="small" type="primary" @click="add"><i class="el-icon-plus" style="font-weight: bold;"></i> 新增</el-button>
-              <el-button size="small" type="primary" @click="importWords()"><i class="el-icon-upload2" style="font-weight: bold;"></i> 导入</el-button>
+              <el-button size="small" type="primary" @click="importWords"><i class="el-icon-upload2" style="font-weight: bold;"></i> 导入</el-button>
           </el-col>
       </el-row>
 
       <el-table 
-          :data="tableData"
-          border
-          :header-cell-style="{ background : '#f2f5fc'}"
-          style="width: 100%">
-          <el-table-column prop="classId" label="所属课程" width="180"></el-table-column>
-          <el-table-column prop="groupId" label="分组" width="180"></el-table-column>
-          <el-table-column prop="wmean" label="中文释义" width="180"></el-table-column>
-          <el-table-column prop="wread" label="读音" width="260"></el-table-column>
-          <el-table-column prop="wwrite" label="写法" width="200"></el-table-column>
-          <el-table-column prop="lastLearnTime" label="上次学习时间" width="260"></el-table-column>
-          <el-table-column label="操作" width="auto">
-              <template slot-scope="scope">
-                  <el-button size="mini" @click="modifyWord(scope.row)"><i class="el-icon-edit-outline"></i> 编辑</el-button>
-                  <el-button size="mini" type="danger" @click="removeWord(scope.row)"><i class="el-icon-delete"></i> 删除</el-button>
-              </template>
-          </el-table-column>
+            :data="tableData"
+            border
+            :header-cell-style="{ background : '#f2f5fc'}"
+            style="width: 100%">
+            <el-table-column prop="classId" label="所属课程" width="180"></el-table-column>
+            <el-table-column prop="groupId" label="分组" width="180"></el-table-column>
+            <el-table-column prop="wmean" label="中文释义" width="180"></el-table-column>
+            <el-table-column prop="wread" label="读音" width="260"></el-table-column>
+            <el-table-column prop="wwrite" label="写法" width="200"></el-table-column>
+            <el-table-column prop="lastLearnTime" label="上次学习时间" width="260"></el-table-column>
+            <el-table-column label="操作" width="auto">
+                <template slot-scope="scope">
+                    <el-button size="mini" @click="modifyWord(scope.row)"><i class="el-icon-edit-outline"></i> 编辑</el-button>
+                    <el-button size="mini" type="danger" @click="removeWord(scope.row)"><i class="el-icon-delete"></i> 删除</el-button>
+                </template>
+            </el-table-column>
         </el-table>
+        <el-pagination
+            background
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageVO.pageNo"
+            :page-sizes="[10, 50, 100]"
+            :page-size="pageVO.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            @next-click="refresh"
+            @prev-click="refresh"
+            :total="pageVO.pageCount"
+            style="text-align: right;margin-top: 5px;">
+        </el-pagination>
+
 
         <el-dialog
           title="新增单词"
@@ -178,10 +192,13 @@ export default {
             groupObjs: [],   // 分组
             groupId: '',
             uploadFile : null,
-            word: {
-                'wmean'    : '',
+            pageVO :{
+                'wmean'   : '',
                 'classId' : '',
-                'groupId' : ''
+                'groupId' : '',
+                'pageNo' : 0,
+                'pageSize' : 10,
+                'pageCount' : 0
             },
             form :{
                 'id'     :'',
@@ -212,9 +229,8 @@ export default {
     },
 
     methods :{
-        loadWords () {
-            
-            this.$axios.get(this.$httpUrl + '/jp/list/group').then(res => {
+        loadWords () {   
+            this.$axios.get(this.$httpUrl + '/jp/list/group').then( res => {
                 if (res.data.code === 0) {
                     this.groupObjs = res.data.data
                 } else {
@@ -236,23 +252,47 @@ export default {
                 }          
             })
 
-            this.$axios.get(this.$httpUrl + '/jp/listAll').then(res => {
+            this.loadData()
+        },
+
+        handleSizeChange(size) {
+            this.pageVO.pageSize = size
+            this.loadData()
+        },
+
+        handleCurrentChange(currentPage) {
+            this.pageVO.pageNo = currentPage
+            this.loadData()
+        },
+
+        loadData () {
+            this.$axios({
+                url : this.$httpUrl + '/jp/list',
+                method : 'post',
+                data : this.pageVO
+            }).then(res => {
+                console.log(res)
                 if (res.data.code === 0) { // 请求成功
-                    this.tableData = res.data.data
+                    this.tableData = res.data.data.data
+                    this.pageVO.pageCount = res.data.data.count
                 } else {
                     this.$message({
                         type: 'error',
-                        message : '获取单词失败：' + res.data.message
+                        message : '获取单词失败：' + res.data.data.message
                     })
                 }          
             })
         },
 
         refresh () {
-            this.loadWords();
-            this.word.wmean = '' 
-            this.word.classId = ''
-            this.word.groupId = ''
+
+            this.pageVO.wmean = '' 
+            this.pageVO.classId = ''
+            this.pageVO.groupId = ''
+            this.pageVO.pageNo = 1
+            this.pageVO.pageSize = 10
+            this.pageVO.pageCount = 0
+            this.loadWords()
             this.$message({
                 type : 'success',
                 message : '刷新成功'
@@ -260,27 +300,7 @@ export default {
         },
 
         search () {
-            this.$axios({
-                url: this.$httpUrl + '/jp/list',
-                method: 'post',
-                headers:{
-                    'Content-Type' : 'application/json'
-                },
-                data : this.word
-            }).then((res) => {
-                if (res.data.code === 0) {
-                    this.tableData = res.data.data
-                    this.$message({
-                        type : 'success',
-                        message : '搜索成功'
-                    })
-                } else {
-                    this.$message({
-                          type: 'error',
-                          message : '搜索单词失败：' + res.data.message
-                    })
-                }
-            })
+            this.loadData()
         },
 
         add () {

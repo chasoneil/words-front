@@ -1,7 +1,7 @@
 <template>
 
     <div>
-        <h1> English page</h1>
+        <h1>模块构建中...</h1>
     </div>
 </template>
 
