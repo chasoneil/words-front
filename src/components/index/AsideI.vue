@@ -7,7 +7,7 @@
       :collapse="isCollapse"
       :collapse-transition="false"
       router> 
-      <el-menu-item index="home">
+      <el-menu-item index="index">
         <i class="el-icon-menu"></i>
         <span slot="title">首页</span>
       </el-menu-item>

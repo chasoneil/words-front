@@ -25,7 +25,7 @@
               </div>
           </el-col>
           <!-- <el-col :span="6"><div class="grid-content bg-white"></div></el-col> -->
-          <el-col :span="6"><div class="grid-content bg-white"></div></el-col>
+          <el-col :span="6"><div class="grid-content-1 bg-white"></div></el-col>
           <el-col :span="4" style="text-align: right;">
               <el-button size="small" type="primary" @click="add"><i class="el-icon-plus" style="font-weight: bold;"></i> 新增</el-button>
               <el-button size="small" type="primary" @click="importWords"><i class="el-icon-upload2" style="font-weight: bold;"></i> 导入</el-button>
@@ -168,7 +168,7 @@
     background: #ffffff;
   }
 
-  .grid-content {
+  .grid-content-1 {
     border-radius: 4px;
     min-height: 36px;
   }

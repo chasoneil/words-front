@@ -84,7 +84,7 @@ export default {
                         res => {
                             if (res.code === 0) {
                                 sessionStorage.setItem("curUser", JSON.stringify(res.data))
-                                this.$router.replace('/home')
+                                this.$router.replace('/index')
                             } else {
                                 this.confirm_disabled = false
                                 this.$message({

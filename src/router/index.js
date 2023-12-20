@@ -1,11 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../components/Login.vue'
-import Index from '../components/Index.vue'
+import Manager from '../components/Index.vue'
 import Japan from '../components/japan/JapanWordsManager.vue'
 import English from '../components/english/EnglishWordsManager.vue'
 import User from '../components/user/UserManager.vue'
 import BackHome from '../components/index/BackHome.vue'
+import Index from '../views/Index.vue'
+import RememberSelect from '../views/words/IndexBodyMain.vue'
+import JapanRemember from '../views/jp/RemJpWordsIndex.vue'
 
 
 Vue.use(VueRouter)
@@ -13,7 +16,7 @@ Vue.use(VueRouter)
 const routes = [
   // login page 
   {             
-    path: '/',
+    path: '/login',
     name: 'Login',
     component: Login
   },
@@ -22,9 +25,33 @@ const routes = [
     path: '/index',
     name: 'Index',
     component: Index,
+    children : [
+      {             
+        path: '/',
+        name: 'RememberSelect',
+        meta : {
+            title : '背单词首页'
+        },
+        component: RememberSelect
+      },
+      {             
+        path: '/jp_rem',
+        name: 'JapanRemember',
+        meta : {
+            title : '背日语单词'
+        },
+        component: JapanRemember
+      },
+    ]
+  },
+  // manager pagees
+  {             
+    path: '/manager',
+    name: 'Manager',
+    component: Manager,
     children : [              //  属于一级菜单下的二级菜单
       {             
-        path: '/home',
+        path: '/',
         name: 'BackHome',
         meta : {
             title : '后台管理首页'

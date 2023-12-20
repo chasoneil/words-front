@@ -15,7 +15,7 @@
             </el-main>
         </el-container>
     </el-container>
-  </template>
+</template>
 
 <style>
   .el-header {
